@@ -4,6 +4,7 @@ const app = express()
 import Pusher from 'pusher'
 const port  = process.env.PORT || 3001
 import Message from './dbMessages.js'
+import Cors from "cors"
 
 const pusher = new Pusher({
     appId: "1128617",
@@ -15,11 +16,7 @@ const pusher = new Pusher({
 
 //Middlewares
 app.use(express.json())
-app.use((req,res,next)=>{
-    res.setHeader("Allow-Control-Allow-Origin","*");
-    res.setHeader("Access-Control-Allow-Headers","*")
-    next()
-});
+app.use(Cors())
 
 //DB cong
 
@@ -40,8 +37,9 @@ db.once('open',()=>{
      if(change.operationType === 'insert'){
          const messageDetails = change.fullDocument;
          pusher.trigger('messages','inserted',{
-             name : messageDetails.user,
+             name : messageDetails.name,
              message : messageDetails.message,
+             timestamp :messageDetails.timestamp
          })
      }else{
          console.log('Error')
