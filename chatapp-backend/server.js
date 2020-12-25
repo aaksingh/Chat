@@ -1,13 +1,25 @@
 import mongoose from 'mongoose'
-const express = require('express')
-const { Mongoose } = require('mongoose')
+import express  from 'express'
 const app = express()
-const port  = process.env.PORT || 9000
+import Pusher from 'pusher'
+const port  = process.env.PORT || 3001
+import Message from './dbMessages.js'
 
-// API routes
+const pusher = new Pusher({
+    appId: "1128617",
+    key: "f4795fbbb47df9e292a1",
+    secret: "4d48fbbb544e43a29358",
+    cluster: "ap2",
+    useTLS: true
+  });
 
-app.get('/',(req,res)=>res.status(200).send("Hello"))
-
+//Middlewares
+app.use(express.json())
+app.use((req,res,next)=>{
+    res.setHeader("Allow-Control-Allow-Origin","*");
+    res.setHeader("Access-Control-Allow-Headers","*")
+    next()
+});
 
 //DB cong
 
@@ -17,6 +29,55 @@ mongoose.connect(config_url,{
     useNewUrlParser:true,
     useUnifiedTopology:true
 })
+
+const db = mongoose.connection;
+
+db.once('open',()=>{
+    const msgCollection = db.collection("messagecontents")
+    const changeStreamm = msgCollection.watch()
+
+    changeStreamm.on("change",(change)=>{
+     if(change.operationType === 'insert'){
+         const messageDetails = change.fullDocument;
+         pusher.trigger('messages','inserted',{
+             name : messageDetails.user,
+             message : messageDetails.message,
+         })
+     }else{
+         console.log('Error')
+     }
+    });
+});
+
+// API routes
+
+app.get('/',(req,res)=>res.status(200).send("Hello"))
+
+app.get('/messages/sync',(req,res)=>{
+    Message.find((err,data)=>{
+        if(err){
+           
+        }
+        else{
+            res.status(200).send(data)
+        }
+    })
+})
+app.post('/messages/new',(req,res)=>{
+    const messagedb = req.body
+
+    Message.create(messagedb,(err,data)=>{
+        if(err){
+            res.status(500).send(err)
+        }
+        else{
+            res.status(201).send(data)
+        }
+    })
+})
+
+
+
 
 //listen
 
