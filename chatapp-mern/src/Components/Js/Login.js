@@ -9,7 +9,7 @@ import {auth, provider} from "../Firebase/firebase.js"
 function Login() {
     const [state, dispatch] = useStateValue();
 
-    const signIn = ()=>{
+    const signinIn = ()=>{
           auth.signInWithPopup(provider).then(result=>{
               console.log(result)
               dispatch({
@@ -26,7 +26,7 @@ function Login() {
             <div className="login__container">
                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxB3uL_BisAkkKCsYMvzrJa06LwuX5WWs2Ng&usqp=CAU"/>
                 <h3>LogIn to Chat</h3>
-            <Button onClick={signIn}>
+            <Button onClick={signingIn}>
                 Sigin With Google
             </Button>
             </div>
