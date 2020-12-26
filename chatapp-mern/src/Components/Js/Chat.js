@@ -3,14 +3,16 @@ import "../Css/Chat.css";
 import { Avatar, IconButton } from "@material-ui/core";
 import { SearchOutlined } from "@material-ui/icons";
 import axios from "./axios.js"
+import { useStateValue } from "../../StateProvider";
 function Chat({messages}) {
   const [input, setinput] = useState("")
+  const  [{user}] = useStateValue()
  
   const sendMessage= async (e)=>{
     e.preventDefault();
     await axios.post('messages/new',{
       message:input,
-      name:"Demo Golu",
+      name:user?.displayName,
       timestamp:"5:55",
       received:false,
 

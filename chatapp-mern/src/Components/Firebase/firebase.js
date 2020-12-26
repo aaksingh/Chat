@@ -1,4 +1,6 @@
+import firebase from 'firebase'
 const firebaseConfig = {
+
     apiKey: "AIzaSyBeWeG1q3m4KkYShXdHgCiSgKTQxLEGuf4",
     authDomain: "chatapp-aaksingh.firebaseapp.com",
     projectId: "chatapp-aaksingh",
@@ -10,3 +12,9 @@ const firebaseConfig = {
 
 
   //Authentication and Hosting
+  const firebaseApp = firebase.initializeApp(firebaseConfig)
+  const auth = firebase.auth()
+const provider = new firebase.auth.GoogleAuthProvider()
+
+export { auth, provider }
+

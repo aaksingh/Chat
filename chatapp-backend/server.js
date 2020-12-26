@@ -2,10 +2,11 @@ import mongoose from 'mongoose'
 import express  from 'express'
 const app = express()
 import Pusher from 'pusher'
-const port  = process.env.PORT || 3001
+
 import Message from './dbMessages.js'
 import Cors from "cors"
 
+const port  = process.env.PORT || 3001
 const pusher = new Pusher({
     appId: "1128617",
     key: "f4795fbbb47df9e292a1",
